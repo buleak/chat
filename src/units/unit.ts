@@ -1,0 +1,1 @@
+export const isObj = () => console.log('Obj')
