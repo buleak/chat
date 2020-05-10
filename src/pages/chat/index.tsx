@@ -3,7 +3,7 @@ import {useState, useEffect, useReducer} from 'react'
 import {useHistory, useLocation} from 'react-router-dom'
 import styled from "@emotion/styled";
 import { jsx, css } from "@emotion/core";
-import { Avatar, Badge, Button } from 'antd'
+import { Avatar } from 'antd'
 
 import $ from '../../units/api'
 import { Send, Title } from '../../components'
