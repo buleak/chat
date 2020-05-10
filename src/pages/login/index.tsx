@@ -3,11 +3,13 @@
 // 而不是对response . createelement的调用
 
 /** @jsx jsx */
-import React from 'react'
+// import React from 'react'
 import styled from "@emotion/styled";
 import { jsx, css } from "@emotion/core";
-import { Form, Input, Button, Checkbox } from 'antd'
+import { Form, Input, Button, Checkbox, message } from 'antd'
 
+// import {LoginForm} from '../../units/interface'
+import $ from '../../units/api'
 import bg from '../../resources/imgs/bg-1.jpg'
 import logo from '../../resources/imgs/logo.svg'
 
@@ -27,17 +29,27 @@ const LoginBox = styled.div`
     }
 `;
 const btnLayout = { wrapperCol: { offset: 4, span: 16 } };
-const tailLayout = { wrapperCol: { offset: 8, span: 16 } };
 const layout = { labelCol: { span: 8 }, wrapperCol: { span: 16 }, };
 
 const index = (props:any) => {
-    const onFinish = (values: any) => {
-        console.log('Success: ', values)
+    const onFinish = (values: any) => { // 提交表单
+        $.login(values).then((data:any) => {
+            const {msg, token, status, userInfo} = data
+            console.log(data)
+            if(status) { // 登录成功
+                message.info(msg)
+                localStorage.setItem(`token`, token)
+                localStorage.setItem(`userInfo`, JSON.stringify(userInfo))
+                props.history.replace('/admin')
+            }else { // 登录失败
+                message.warn(msg)
+            }
+        })
     };
-    const onFinishFailed = (errorInfo: any) => {
+    const onFinishFailed = (errorInfo: any) => { // 提交表单失败
         console.log('Failed: ', errorInfo)
     };
-    const toRegister = () => {
+    const toRegister = () => { // 跳转-注册页面
         props.history.replace('/register')
     }
     return (
@@ -46,9 +58,6 @@ const index = (props:any) => {
                 width: 200px; 
                 height: 200px; 
                 animation: App-logo-spin 20s linear; 
-                &:hover {
-                    animation-play-state: paused; 
-                }
                 @keyframes App-logo-spin {
                     from {
                       transform: rotate(0deg);
@@ -85,10 +94,6 @@ const index = (props:any) => {
                     rules={[{ required: true, message: 'Please input your password!' }]}
                 >
                     <Input.Password placeholder='Please input your password!'/>
-                </Form.Item>
-
-                <Form.Item {...tailLayout} name="remember" valuePropName="checked">
-                    <Checkbox>Remember me</Checkbox>
                 </Form.Item>
 
                 <Form.Item {...btnLayout} css={css`margin:10px auto;`}>

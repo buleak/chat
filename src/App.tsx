@@ -6,15 +6,14 @@ import {Switch, Route, Redirect} from 'react-router-dom'
 //   mine, search,
 //   detail, invite,
 //   login, register,
-//   group, groupDetail, groupModify,
+//   address, groupDetail, groupModify,
 //   admin as FriendList, 
 //   notFound as NotFound,
 // } from './pages'
 
 import {
-  mine,
-  login, register,
-  admin as FriendList, 
+  login, register, search, chat,
+  admin as HomePage, 
   notFound as NotFound,
 } from './pages'
 
@@ -25,15 +24,17 @@ const App = () => (
   // senstive: 大小写匹配  ['/', '/foo', '/Foo']
   <Switch>
     <Route exact path='/' render={({location}) => {
-      return localStorage.getItem('token') ?  (<FriendList />) : (<Redirect from='/' to={{pathname: '/login', state:{from:location}}} />)
+      return localStorage.getItem('token') ?  (<HomePage />) : (<Redirect from='/' to={{pathname: '/login', state:{from:location}}} />)
     }} />
     <Route path='/login' component={login} />
     <Route path='/register' component={register} />
-    <Route path='/admin' render={() => <FriendList />} />
-    <Route path='/mine' component={mine} />
+    <Route path='/admin' render={() => <HomePage />} />
+    <Route path='/chat' component={chat} />
+    <Route path='/search' component={search} />
     <Route render={() => <NotFound />} />
   </Switch>
 )
 
 export default App
+// synaptics
 

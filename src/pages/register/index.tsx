@@ -3,11 +3,12 @@
 // 而不是对response . createelement的调用
 
 /** @jsx jsx */
-import React from 'react'
+// import React from 'react'
 import styled from "@emotion/styled";
 import { jsx, css } from "@emotion/core";
-import { Form, Input, Select, Button } from 'antd'
+import { Form, Input, Button, Radio, message } from 'antd'
 
+import $ from '../../units/api'
 import bg from '../../resources/imgs/bg-1.jpg'
 import logo from '../../resources/imgs/logo.svg'
 const LoginBox = styled.div`
@@ -31,13 +32,22 @@ const formItemLayout = { labelCol: { xs: { span: 24 }, sm: { span: 8 }, }, wrapp
 export default (props: any) => {
     const [form] = Form.useForm();
 
-    const onFinish = (values: any) => {
-        console.log('Received values of form: ', values);
+    const onFinish = (values: any) => { // 提交表单
+        // console.log('Received values of form: ', values);
+        $.register(values).then((data:any) => {
+            const {msg, status} = data
+            if(status) { // 注册成功
+                message.info(msg)
+                toLogin()
+            }else { // 注册失败
+                message.warn(msg)
+            }
+        })
     };
-    const onFinishFailed = (errorInfo: any) => {
+    const onFinishFailed = (errorInfo: any) => { // 提交表单失败
         console.log('Failed: ', errorInfo)
     };
-    const toLogin = () => {
+    const toLogin = () => { // 跳转-登录页面
         props.history.replace('/login')
     }
     return (
@@ -46,9 +56,6 @@ export default (props: any) => {
                 width: 200px; 
                 height: 200px; 
                 animation: App-logo-spin 20s linear; 
-                &:hover {
-                    animation-play-state: paused; 
-                }
                 @keyframes App-logo-spin {
                     from {
                       transform: rotate(0deg);
@@ -62,15 +69,10 @@ export default (props: any) => {
                 {...formItemLayout}
                 form={form}
                 name='register'
-                initialValues={{
-                    residence: ['zhejiang', 'hangzhou', 'xihu'],
-                    prefix: '86',
-                }}
                 scrollToFirstError
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 css={css`
-                width: 400px;
                 margin: 10px auto;
                 padding: 20px 10px;
                 background: rgba(255, 255, 255, 0.5);
@@ -78,20 +80,19 @@ export default (props: any) => {
                 `}
             >
                 <Form.Item
-                    name="email"
-                    label="E-mail"
+                    name="sex"
+                    label="Sex"
                     rules={[
                         {
-                            type: 'email',
-                            message: 'The input is not valid E-mail!',
-                        },
-                        {
                             required: true,
-                            message: 'Please input your E-mail!',
+                            message: 'Please choose your sex!',
                         },
                     ]}
                 >
-                    <Input />
+                    <Radio.Group name='sex'>
+                        <Radio value="male">男</Radio>
+                        <Radio value="female">女</Radio>
+                    </Radio.Group>
                 </Form.Item>
                 <Form.Item
                     label='UserName'
@@ -119,7 +120,6 @@ export default (props: any) => {
                         },
                         ({ getFieldValue }) => ({
                             validator(rule, value) {
-                                console.log(value, getFieldValue('passWord'))
                                 if (!value || getFieldValue('passWord') === value) {
                                     return Promise.resolve();
                                 }

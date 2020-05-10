@@ -3,7 +3,7 @@ import React from 'react'
 const index = () => {
     return (
         <div>
-            login
+            发现
         </div>
     )
 }

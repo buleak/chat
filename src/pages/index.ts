@@ -11,18 +11,17 @@ import detail from "./detail";
 import invite from "./invite";
 
 // 群
-import group from "./group";
+import address from "./address";
 import groupDetail from "./groupDetail";
 import groupModify from "./groupModify";
 
 // 个人中心
 import mine from "./mine";
 
+import find from "./find";
+
 // 聊天
 import chat from "./chat";
-
-// 发送信息
-import send from "./send";
 
 // 404
 import notFound from "./notFound";
@@ -30,7 +29,7 @@ export {
     login, register,
     admin, mine, search,
     detail, invite,
-    group, groupDetail, groupModify,
-    chat, send,
+    address, groupDetail, groupModify,
+    chat, find,
     notFound,
 }

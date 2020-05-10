@@ -1,12 +1,13 @@
-import axios from "axios";
-import { Modal } from "antd";
-import { stringify } from "qs";
+// import qs from 'qs'
+import axios from 'axios'
+import { message } from 'antd'
+import { baseURL } from './config.default'
 
-import {AxiosConfig} from './interface'
-import { baseURL } from "./config.default";
-// import { getWeekLocalStorage } from "./storage";
+axios.defaults.timeout = 3600000 * 24
+axios.defaults.baseURL = (baseURL as string)
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
 
-const codeMessage: any = {
+const codeMessage:any = {
   200: "服务器成功返回请求的数据。",
   201: "新建或修改数据成功。",
   202: "一个请求已经进入后台排队（异步任务）。",
@@ -23,116 +24,132 @@ const codeMessage: any = {
   503: "服务不可用，服务器暂时过载或维护。",
   504: "网关超时。"
 };
-
-function checkStatus(response:any) {
-  if (!response) {
-    throw new Error("response is undefined");
+const returnLoginPage = () => {
+  if (window.location.href === '/login') {
+    return false;
   }
-  if (response.status >= 200 && response.status < 300) {
-    return response;
-  }
-  const errorText:string = codeMessage[response.status] || response.statusText;
-  const error:any = new Error(errorText);
-  error.name = response.status;
-  error.response = response;
-  error.text = errorText;
-  throw error;
+  // 携带当前页面路径跳转到登录页面，登录成功后返回当前页面
+  localStorage.removeItem('token')
+  window.location.href = '/login'
 }
-
-export const config:AxiosConfig = {
-  //`baseURL` 将自动加在 `url` 前面，除非 `url` 是一个绝对 URL。
-  // 它可以通过设置一个 `baseURL` 便于为 axios 实例的方法传递相对 URL
-  baseURL: baseURL || undefined,
-  // 在请求发送前，可以根据实际要求，是否要对请求的数据进行转换
-  // 仅应用于 post、put、patch 请求
-  transformRequest: [
-    function(data:any, headers:any) {
-      // Do whatever you want to transform the data
-      // console.log(headers);
-      return stringify(data);
-    }
-  ],
-
-  //  `transformResponse` 在传递给 then/catch 前，允许修改响应数据
-  // it is passed to then/catch
-  transformResponse: [
-    function(data:any) {
-      // Do whatever you want to transform the data
-
-      return data;
-    }
-  ],
-
-  // 请求头信息
-  headers: {
-    // 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8;',
-  },
-  // 设置超时时间
-  timeout: 1000,
-  // 携带凭证
-  withCredentials: false
-};
-
-const instance = axios.create(config);
-
-//请求拦截器
-instance.interceptors.request.use(
+// 请求拦截
+axios.interceptors.request.use(
   config => {
-    // Do something before request is sent
-    // 可以在这里做一些事情在请求发送前
-    // config.headers['TOKEN']=''// 在这里设置请求头与携带token信息;
-    const token = localStorage.getItem("token");
+    // 每次发送请求之前判断是否存在token，如果存在，则统一在http请求的header都加上token，不用每次请求都手动添加了
+    // 即使本地存在token，也有可能token是过期的，所以在响应拦截器中要对返回状态进行判断
+    const token = localStorage.getItem('token');
     if (token) {
-      config.headers["AUTHORIZATION"] = token;
+      // console.log('token >>', token)
+      config.headers.Authorization = `Bearer ${token}` // 不能直接设置值为 token，需要在前面加上 Bearer+空格       
     }
-    if (config.method === "post") {
-      config.headers["Content-Type"] =
-        "application/x-www-form-urlencoded;charset=UTF-8";
-    }
-
     return config;
   },
-  error => {
-    // Do something whit request error
-    // 请求失败可以做一些事情
-    return Promise.reject(error);
-  }
-);
+  error => Promise.reject(error)
+)
 
-//响应拦截器
-instance.interceptors.response.use(
+// 响应拦截
+axios.interceptors.response.use(
   response => {
-    // Do something with response data
-    // 在这里你可以判断后台返回数据携带的请求码
-    return response;
+    if (response.status === 200) {
+      return Promise.resolve(response)
+    } else {
+      return Promise.reject(response)
+    }
   },
   error => {
-    // Do something whit response error
-    // 根据 错误码返回信息
-    return checkStatus(error.response);
+    // console.log('error >>', error)
+    console.log('errorText >>', codeMessage[error.response.status])
+
+    if (error.response.status) {
+      switch (error.response.status) {
+        case 400:
+          break;
+        case 401: 
+          message.info('INFO: 您尚未登录[401]')
+          returnLoginPage()
+          break;
+        case 403: 
+          message.warn('WARN: 登录凭证过期[403]')
+          returnLoginPage()
+          break;
+        case 404:
+          message.error('ERROR: 网络请求不存在[404]')
+          break;
+        case 405:
+          break;
+        case 408:
+          break;
+        case 500:
+          message.error('ERROR: 服务器端出错[500]')
+          break;
+        case 501:
+          break;
+        case 502:
+          break;
+        case 503:
+          break;
+        case 504:
+          break;
+        default:
+          message.error(`ERROR: ${error.response.message}`)
+      }
+      return Promise.reject(error.response)
+    } else {
+      message.error('ERROR: 未发现 error status')
+    }
   }
-);
+)
 
-/* method GET/POST/PUT
- * url
- * params/data
- * headers { 'content-type': 'application/x-www-form-urlencoded'}
+/**
+ * axios的 get请求方法
+ * @param url 请求的URL地址
+ * @param params 请求时携带的参数
  */
-const ajax = (options: any) => {
+export const get = (url: string, params?: any) => {
   return new Promise((resolve, reject) => {
-    instance(options)
-      .then(response => {
-        resolve(response);
-      })
-      .catch(error => {
-        console.dir(error);
-        Modal.error({
-          title: "请求错误",
-          content: error.message
-        });
-        reject(error);
-      });
-  });
-};
+    axios.get(url, {
+      params
+    }).then(res => {
+      console.log(`GET[${url}] >>`, res)
+      resolve(res.data)
+    }).catch(err => {
+      console.log(`GET[${url}] >>`, err)
+      reject(err.data)
+    })
+  })
+}
 
-export default ajax;
+/**
+ * axios的 post请求方法
+ * @param url 请求的URL地址
+ * @param params 请求时携带的参数
+ */
+export const post = (url: string, params: any) => {
+  return new Promise((resolve, reject) => {
+    axios.post(url, {
+      ...params
+    }).then(res => {
+      console.log(`POST[${url}] >>`, res)
+      resolve(res.data)
+    }).catch(err => {
+      console.log(`POST[${url}] >>`, err)
+      reject(err.data)
+    })
+  })
+}
+
+/**
+ * axios的并发请求
+ * @param axiosList axios请求列表
+ */
+export const all = (axiosList: object[]) => {
+  return new Promise((resolve, reject) => {
+    axios.all(axiosList).then(axios.spread((acct, perms) => {
+      // 所有 axiosList内的请求结束后执行
+      console.log('axios spread >>', acct, perms)
+      resolve({ acct, perms })
+    })).catch(error => {
+      reject(error)
+    })
+  })
+}
