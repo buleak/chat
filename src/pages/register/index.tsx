@@ -6,7 +6,8 @@
 // import React from 'react'
 import styled from "@emotion/styled";
 import { jsx, css } from "@emotion/core";
-import { Form, Input, Button, Radio, message } from 'antd'
+import { Form, Input, Radio, message } from 'antd'
+import {NButton} from '../../components/Neumorphism'
 
 import $ from '../../units/api'
 import bg from '../../resources/imgs/bg-1.jpg'
@@ -73,19 +74,23 @@ export default (props: any) => {
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 css={css`
+                width: 300px;
                 margin: 10px auto;
                 padding: 20px 10px;
-                background: rgba(255, 255, 255, 0.5);
-                box-shadow: 5px 5px 5px 2px rgba(0, 0, 0, 0.8); // inset 左 下 模糊区间 模糊距离 颜色 内阴影
+                border-radius: 8px;
+                background: rgba(240, 240, 240, 0.5);
+                box-shadow: 2px 2px 3px rgba(0,0,0,1), -2px -2px 3px rgba(240,240,240,1), 
+                    3px 3px 4px rgba(0,0,0,0.8), -3px -3px 4px rgba(240,240,240,0.8), 
+                    4px 4px 5px rgba(0,0,0,0.5), -4px -4px 5px rgba(240,240,240,0.5); // inset 左 下 模糊区间 模糊距离 颜色 内阴影
                 `}
             >
                 <Form.Item
+                    label="性别"
                     name="sex"
-                    label="Sex"
                     rules={[
                         {
                             required: true,
-                            message: 'Please choose your sex!',
+                            message: '请设置您的性别',
                         },
                     ]}
                 >
@@ -95,45 +100,45 @@ export default (props: any) => {
                     </Radio.Group>
                 </Form.Item>
                 <Form.Item
-                    label='UserName'
+                    label='姓名'
                     name='userName'
-                    rules={[{ required: true, message: 'Please input your username!' }]}
+                    rules={[{ required: true, message: '请设置您的姓名' }]}
                 >
-                    <Input placeholder='Please input your username!' />
+                    <Input placeholder='请设置您的姓名' />
                 </Form.Item>
                 <Form.Item
-                    label="PassWord"
+                    label="密码"
                     name="passWord"
-                    rules={[{ required: true, message: 'Please input your password!' }]}
+                    rules={[{ required: true, message: '请设置您的密码' }]}
                 >
-                    <Input.Password placeholder='Please input your password!' />
+                    <Input.Password placeholder='请设置您的密码' />
                 </Form.Item>
                 <Form.Item
                     name="confirm"
-                    label="Confirm Password"
+                    label="再次确认"
                     dependencies={['passWord']}
                     hasFeedback
                     rules={[
                         {
                             required: true,
-                            message: 'Please confirm your password!',
+                            message: '密码不一致',
                         },
                         ({ getFieldValue }) => ({
                             validator(rule, value) {
                                 if (!value || getFieldValue('passWord') === value) {
                                     return Promise.resolve();
                                 }
-                                return Promise.reject('The two passwords that you entered do not match!');
+                                return Promise.reject('密码不一致');
                             },
                         }),
                     ]}
                 >
-                    <Input.Password />
+                    <Input.Password placeholder='请再次设置您的密码'/>
                 </Form.Item>
 
                 <Form.Item {...btnLayout} css={css`margin:10px auto;`}>
-                    <Button type="primary" htmlType="submit"> Register </Button>
-                    <Button type="dashed" htmlType="submit" css={css`margin-left: 30px;`} onClick={toLogin}> to login </Button>
+                    <NButton type="primary" htmlType="submit"> Register </NButton>
+                    <NButton htmlType="submit" css={css`margin-left: 10px;`} onClick={toLogin}> to login </NButton>
                 </Form.Item>
             </Form>
         </LoginBox>

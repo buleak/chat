@@ -1,8 +1,8 @@
 /** @jsx jsx */
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import styled from "@emotion/styled";
 import { jsx, css } from "@emotion/core";
-import { Input, Button, message } from 'antd'
+import { Input, Button } from 'antd'
 // import { SearchOutlined } from '@ant-design/icons';
 import {useHistory} from 'react-router-dom'
 

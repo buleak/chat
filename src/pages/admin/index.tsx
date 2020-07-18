@@ -1,43 +1,39 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 
-import $ from '../../units/api'
+import { Layout } from 'antd'
+import { Head, Side } from '../../components'
+import { message, address, mine, document } from '../index'
+
 import { useMineRouteMatch } from '../../units/unit'
-import { userInfo, UserInfo } from '../../units/context'
-import { Head, Foot, UserList, Loading, Empty } from '../../components'
-import { address, mine, find } from '../index'
+import { userInfo, UserInfoCtx } from '../../units/context'
+
+const {Content, Footer} = Layout
+
 export default () => {
-    const [isEmpty, setIsEmpty] = useState(true)
-    const [isLoading, setIsLoading] = useState(false)
-    const [historyGroupList, setHistoryGroupList] = useState([])
     const { url, path } = useMineRouteMatch()
-    useEffect(() => {
-        setIsLoading(true)
-        // 历史记录列表
-        let cancelRequest = false
-        $.getHistoryGroupList({ userID: userInfo.userID }).then((data: any) => {
-            if(cancelRequest) { return }
-            setIsLoading(false)
-            setHistoryGroupList(data)
-            setIsEmpty(!Boolean(data.length))
-        })
-        return () => {
-            cancelRequest = true
-        }
-    }, [])
+
     return (
-        <UserInfo.Provider value={userInfo}>
-            <Head />
-            <main style={{ margin: '60px 0 80px', height: 'calc(100vh-140px)' }}>
-                <Switch>
-                    <Route exact path={`${path}`} render={({ location }) => isLoading ? <Loading /> : isEmpty ? <Empty /> : <UserList userList={historyGroupList} type={1} />}></Route>
-                    <Route exact path={`${path}/address`} component={address}></Route>
-                    <Route exact path={`${path}/find`} component={find}></Route>
-                    <Route exact path={`$${path}/mine`} component={mine}></Route>
-                </Switch>
-            </main>
-            <Foot url={url} />
-        </UserInfo.Provider>
+        <UserInfoCtx.Provider value={userInfo}>
+            <Layout>
+                <Side url={url} />
+                <Layout>
+                    <Head />
+                    <Content>
+                        <Switch>
+                            {/* 消息 联系人 文件 设置 */}
+                            <Route exact path={`${path}`} component={message}></Route>
+                            <Route exact path={`${path}/address`} component={address}></Route>
+                            <Route exact path={`${path}/document`} component={document}></Route>
+                            <Route exact path={`$${path}/mine`} component={mine}></Route>
+                        </Switch>
+                    </Content>
+                    <Footer>
+                        <a href="http://www.beian.miit.gov.cn" target='_blank'>豫ICP备19036212号</a>
+                    </Footer>
+                </Layout>
+            </Layout>
+        </UserInfoCtx.Provider>
     )
 }
 

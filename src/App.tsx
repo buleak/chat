@@ -6,13 +6,13 @@ import {Switch, Route, Redirect} from 'react-router-dom'
 //   mine, search,
 //   detail, invite,
 //   login, register,
-//   address, groupDetail, groupModify,
+//   address, createGroup, groupModify,
 //   admin as FriendList, 
 //   notFound as NotFound,
 // } from './pages'
 
 import {
-  login, register, search, chat,
+  login, register, chat, createGroup,
   admin as HomePage, 
   notFound as NotFound,
 } from './pages'
@@ -30,7 +30,7 @@ const App = () => (
     <Route path='/register' component={register} />
     <Route path='/admin' render={() => <HomePage />} />
     <Route path='/chat' component={chat} />
-    <Route path='/search' component={search} />
+    <Route path='/createGroup' component={createGroup} />
     <Route render={() => <NotFound />} />
   </Switch>
 )

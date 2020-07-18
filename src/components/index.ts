@@ -1,5 +1,5 @@
 import Head from './Head'
-import Foot from './Foot'
+import Side from './Side'
 import Send from './Send'
 import Title from './Title'
 import Empty from './Empty'
@@ -9,7 +9,7 @@ import UserList from './UserList'
 
 export {
     Head,
-    Foot,
+    Side,
     Send,
     Title,
     Empty,

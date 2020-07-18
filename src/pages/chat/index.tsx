@@ -1,16 +1,16 @@
 /** @jsx jsx */
-import {useState, useEffect, useReducer} from 'react'
-import {useHistory, useLocation} from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import styled from "@emotion/styled";
 import { jsx, css } from "@emotion/core";
 import { Avatar } from 'antd'
 
 import $ from '../../units/api'
+import { userInfo } from '../../units/context'
 import { Send, Title } from '../../components'
-import { groupInfo } from '../../units/virturalData'
-import { UserHistoryMsgInfo } from "../../units/interface";
+import { GroupSchema, MsgInfo } from "../../units/interface";
 
-const triangle = (col:string, rowNum:string, colNum:string, bwidth:string, bcolor1:string, bcolor2:string, zIndex: number) => {
+const triangle = (col: string, rowNum: string, colNum: string, bwidth: string, bcolor1: string, bcolor2: string, zIndex: number) => {
     return `
         content: '';
         position: absolute;
@@ -61,21 +61,28 @@ const Msg = styled.div`
     word-wrap: break-word;
     word-break: break-all;
 `
-export default (props:any) => {
+export default (props: any) => {
     const location = useLocation()
-    console.log('location', location.state)
-    const state:any = location.state
-    const {groupID, groupType} = state
-    const [historyMsg, setHistoryMsg] = useState([])
+    const state: any = location.state
+    const { groupID, groupType } = state
+    const [groupInfo, setGroupInfo] = useState<GroupSchema>({
+        groupID: '1',
+        groupType: 1, 
+        groupLevel: 1,
+        groupName: '聊天室',
+        groupAvatar: '',
+        groupProfile: '',
+        groupCreateDate: new Date().getTime(),
+        memberList: []
+    })
+    const [historyMsg, setHistoryMsg] = useState<MsgInfo[]>([])
 
     useEffect(() => {
-
-        $.getHistoryMsg({groupID, groupType}).then((data:any) => {
-            console.log('data', data)
+        $.getHistoryMsg({ userID: userInfo.userID, groupID, groupType }).then((data: any) => {
+            setGroupInfo(data.groupInfo)
+            setHistoryMsg(data.msgList)
         })
-        return () => {
-        }
-    }, [])
+    }, [groupID, groupType])
     return (
         <div>
             <Title title={groupInfo.groupName} bgColor='#f0f0f0' />
@@ -94,7 +101,7 @@ export default (props:any) => {
                 }
             `}>
                 {
-                    groupInfo.UserHistoryMsgList.map((item: UserHistoryMsgInfo) => {
+                    historyMsg.length !== 0 && (historyMsg as MsgInfo[]).map((item: MsgInfo) => {
                         if (item.userID === JSON.parse(localStorage.getItem('userInfo') as string).userID) {
                             return (
                                 <MineMsg key={item.msgID}>
@@ -113,7 +120,7 @@ export default (props:any) => {
                     })
                 }
             </ul>
-            <Send/>
+            <Send />
         </div>
     )
 }

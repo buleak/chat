@@ -7,7 +7,7 @@ import {useHistory} from 'react-router-dom'
 // import { Empty, Loading, UserList } from '../../components'
 
 import $ from '../../units/api'
-import { UserInfo } from '../../units/context'
+import { UserInfoCtx } from '../../units/context'
 import {FriendInfo, GroupJoinInInfo} from '../../units/interface'
 // import { useMineRouteMatch } from '../../units/customHooks'
 
@@ -46,15 +46,15 @@ let obj:AddressObject = {
 export default () => {
     const history = useHistory()
     // const { url, path } = useMineRouteMatch()
-    const userInfo = useContext(UserInfo)
+    const userInfo = useContext(UserInfoCtx)
     const [addressObj, setAddressObj] = useState(obj)
 
     const privateChat = (e:any) => {
         let groupID = ''
         const {grouptype, id} = e.currentTarget.dataset
-        if(grouptype === '1') {
+        if(grouptype === 1) {
             groupID = id
-        }else if(grouptype === '2') {
+        }else if(grouptype === 2) {
             groupID = `${userInfo.userID}_${id}`
         }
         history.push({
@@ -62,21 +62,29 @@ export default () => {
             state: { groupID, groupType: Number(grouptype) }
         })
     }
+
+    const addFriend = () => {}
+
+    const createGroup = () => {
+        history.push({
+            pathname: '/createGroup',
+        })
+    }
     
     useEffect(() => {
         $.getAddressObj({ userID: userInfo.userID }).then((data: any) => {
             setAddressObj(data)
         })
-    }, [])
+    }, [userInfo.userID])
 
     return (
         <div>
             <ul>
-                <FlexLi key='newFriend'>
+                <FlexLi key='newFriend' onClick={addFriend}>
                     <UserAddOutlined style={{ backgroundColor: '#faad14' }} />
                     <span className='type'>新的朋友</span>
                 </FlexLi>
-                <FlexLi key='newGroup'>
+                <FlexLi key='newGroup' onClick={createGroup}>
                     <TeamOutlined className='icon' style={{ backgroundColor: '#40a9ff' }} />
                     <span className='type'>群聊</span>
                 </FlexLi>
@@ -86,7 +94,7 @@ export default () => {
                 {
                     addressObj.becomeFriendList && addressObj.becomeFriendList.map((item:any) => (
                         // e.target.dataset.userid 
-                        <FlexLi key={item.userID} data-grouptype={1} data-id={item.userID} onClick={privateChat}>
+                        <FlexLi key={item.userID} data-grouptype={2} data-id={item.userID} onClick={privateChat}>
                             <Avatar className='anticon' src={item.avatar} />
                             <span className='type'>{item.userName}</span>
                         </FlexLi>

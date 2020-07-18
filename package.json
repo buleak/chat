@@ -26,6 +26,9 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
+    "stook": "^0.2.5",
+    "stook-devtools": "^0.1.6",
+    "stook-rest": "^0.2.7",
     "typescript": "^3.7.5",
     "uuid": "^8.0.0"
   },

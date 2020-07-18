@@ -4,9 +4,13 @@
 
 /** @jsx jsx */
 // import React from 'react'
+import { mutate } from 'stook'
 import styled from "@emotion/styled";
 import { jsx, css } from "@emotion/core";
-import { Form, Input, Button, Checkbox, message } from 'antd'
+import { Form, Input, message } from 'antd'
+import { GithubOutlined } from '@ant-design/icons'
+import { NButton } from "../../components/Neumorphism";
+import { useFetch } from 'stook-rest'
 
 // import {LoginForm} from '../../units/interface'
 import $ from '../../units/api'
@@ -31,15 +35,17 @@ const LoginBox = styled.div`
 const btnLayout = { wrapperCol: { offset: 4, span: 16 } };
 const layout = { labelCol: { span: 8 }, wrapperCol: { span: 16 }, };
 
-const index = (props:any) => {
+export default (props:any) => {
     const onFinish = (values: any) => { // 提交表单
+        console.log('login', values)
         $.login(values).then((data:any) => {
-            const {msg, token, status, userInfo} = data
             console.log(data)
+            const {msg, token, status, userInfo} = data
             if(status) { // 登录成功
                 message.info(msg)
                 localStorage.setItem(`token`, token)
                 localStorage.setItem(`userInfo`, JSON.stringify(userInfo))
+                mutate('[userInfo]', userInfo)
                 props.history.replace('/admin')
             }else { // 登录失败
                 message.warn(msg)
@@ -51,6 +57,12 @@ const index = (props:any) => {
     };
     const toRegister = () => { // 跳转-注册页面
         props.history.replace('/register')
+    }
+    const oAuthGithub = () => { // 第三方 Github登录 TODO
+        const url = 'https://github.com/login/oauth/authorize', 
+            clientID = localStorage.getItem('oAuthGithub'), 
+            redirectURI = 'http://localhost:7001/oAuthGithub';
+        window.location.href = `${url}?client_id=${clientID}&redirect_uri=${redirectURI}`
     }
     return (
         <LoginBox>
@@ -77,32 +89,35 @@ const index = (props:any) => {
                 width: 300px;
                 margin: 10px auto;
                 padding: 20px 10px;
-                background: rgba(255, 255, 255, 0.5);
-                box-shadow: 5px 5px 5px 2px rgba(0, 0, 0, 0.8); // inset 左 下 模糊区间 模糊距离 颜色 内阴影
+                border-radius: 8px;
+                background: rgba(240, 240, 240, 0.5);
+                box-shadow: 2px 2px 3px rgba(0,0,0,1), -2px -2px 3px rgba(240,240,240,1), 
+                    3px 3px 4px rgba(0,0,0,0.8), -3px -3px 4px rgba(240,240,240,0.8), 
+                    4px 4px 5px rgba(0,0,0,0.5), -4px -4px 5px rgba(240,240,240,0.5); // inset 左 下 模糊区间 模糊距离 颜色 内阴影
                 `}
             >
                 <Form.Item
-                    label='UserName'
+                    label='姓名'
                     name='userName'
-                    rules={[{ required: true, message: 'Please input your username!' }]}
+                    rules={[{ required: true, message: '请输入正确的姓名' }]}
                 >
-                    <Input placeholder='Please input your username!'/>
+                    <Input placeholder='您的姓名'/>
                 </Form.Item>
                 <Form.Item
-                    label="PassWord"
+                    label="密码"
                     name="passWord"
-                    rules={[{ required: true, message: 'Please input your password!' }]}
+                    rules={[{ required: true, message: '请输入正确的密码' }]}
                 >
-                    <Input.Password placeholder='Please input your password!'/>
+                    <Input.Password placeholder='您的密码'/>
                 </Form.Item>
 
                 <Form.Item {...btnLayout} css={css`margin:10px auto;`}>
-                    <Button type="primary" htmlType="submit"> Submit </Button>
-                    <Button type="dashed" htmlType="submit" css={css`margin-left: 10px;`} onClick={toRegister}> to register </Button>
+                    <NButton type="primary" htmlType="submit"> Submit </NButton>
+                    <NButton htmlType="submit" css={css`margin-left: 10px;`} onClick={toRegister}> to register </NButton>
+                    <GithubOutlined onClick={oAuthGithub} />
                 </Form.Item>
             </Form>
         </LoginBox>
     )
 }
 
-export default index
