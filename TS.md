@@ -16,8 +16,8 @@
    7. any：任何类型
    8. void：没有任何类型[函数无返回值时，其返回类型就是 void]
    9. null：默认情况下null是所有类型的子类型
-   10. undefined：默认情况下undefined是所有类型的子类型
-   11. never：永远不存在值的类型，never是所有类型的子类型
+   10. never：永远不存在值的类型，never是所有类型的子类型
+   11. undefined：默认情况下undefined是所有类型的子类型
    12. object：非原始类型，number，string，boolean，symbol，null或undefined之外的类型
 2. # 类型断言
    1. xxx as string
