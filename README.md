@@ -1,15 +1,15 @@
 # ali cloud 
-// static /usr/local/static 7000 
-// site   /usr/local/site   9000
-// web    /usr/local/react/chatroom/build   80 
+1. // static /usr/local/static 7000 
+2. // site   /usr/local/site   9000
+3. // web    /usr/local/react/chatroom/build   80 
 
 # Github oAuth
 ```js
 {
   '修改配置URL': 'https://github.com/settings/applications/1315821',
   'Authorization callback URL': 'http://localhost:7001/oAuthGithub',
-  'Client ID': 'f4a19c548244724596db',
-  'Client Secret': 'bbb3adc3513cad48accb100bb81b9b960115f93c',
+  'Client ID': 存放于私有仓库,
+  'Client Secret': 存放于私有仓库,
 }
 /*
 1. client: 点击第三方登录图标, 跳转到 Github认证页面: https://github.com/login/oauth/authorize?client_id & redirect_uri, 携带参数 客户端ID & 回跳网址(相当于请求后端)
