@@ -1,5 +1,5 @@
 
-let baseUrl = null;
+let baseUrl = '';
 const testBaseUrl = 'http://localhost:7001'
 const productionBaseUrl = 'http://buleak.top:7001'
 const developmentBaseUrl = 'http://localhost:7001'
@@ -10,5 +10,5 @@ if (process.env.NODE_ENV === 'test') { // 测试环境
 }else if (process.env.NODE_ENV === 'development') { // 开发环境
     baseUrl = developmentBaseUrl
 } 
-export const baseURL = baseUrl;
+export let baseURL = baseUrl;
 

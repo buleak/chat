@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 import { useLocation } from 'react-router-dom'
 import styled from "@emotion/styled";
 import { jsx, css } from "@emotion/core";
@@ -10,6 +10,7 @@ import { userInfo } from '../../units/context'
 import { Send, Title } from '../../components'
 import { GroupSchema, MsgInfo } from "../../units/interface";
 
+// 三角箭头
 const triangle = (col: string, rowNum: string, colNum: string, bwidth: string, bcolor1: string, bcolor2: string, zIndex: number) => {
     return `
         content: '';
@@ -64,7 +65,7 @@ const Msg = styled.div`
 export default (props: any) => {
     const location = useLocation()
     const state: any = location.state
-    const { groupID, groupType } = state
+    const { groupID, groupType } = props
     const [groupInfo, setGroupInfo] = useState<GroupSchema>({
         groupID: '1',
         groupType: 1, 
@@ -84,11 +85,10 @@ export default (props: any) => {
         })
     }, [groupID, groupType])
     return (
-        <div>
-            <Title title={groupInfo.groupName} bgColor='#f0f0f0' />
+        <Fragment>
             <ul css={css`
-                height: 100vh; 
-                padding-top: 70px;
+                height: 60vh;
+                padding: 10px;
                 overflow-y: scroll;
                 background: #f0f0f0;
                 display: flex; flex-wrap: nowrap; flex-direction: column;
@@ -121,7 +121,7 @@ export default (props: any) => {
                 }
             </ul>
             <Send />
-        </div>
+        </Fragment>
     )
 }
 

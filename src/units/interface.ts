@@ -12,14 +12,14 @@ export interface UserShowInfo extends UserBaseInfo { sex: string, registerDate: 
 export interface UserInfo extends UserBaseInfo { passWord: string, sex: string, registerDate: number }
 export type UserSchema = UserBaseInfo 
 
-export interface GroupBaseInfo { groupAvatar: string, groupID: string, groupName: string, groupType: number }
+export interface GroupBaseInfo { groupAvatar?: string, groupID: string, groupName: string, groupType: number }
 export interface GroupMemeberInfo extends UserBaseInfo { userIdentity: number, userAuthority: number, joinGroupDate: number, }
 export interface GroupSchema extends GroupBaseInfo { groupLevel: number, groupProfile: string, groupCreateDate: number, memberList: GroupMemeberInfo[], }
 
 export interface FriendInfo extends UserBaseInfo { becomeFriendDate: number, }
 export interface GroupJoinInInfo extends GroupBaseInfo { joinGroupDate: number, }
-export interface historyRecordInfo extends GroupBaseInfo { lastOnlineMsg: string, lastOnlineDate: number }
-export interface AddressSchema extends UserBaseInfo { joinGroupList: GroupJoinInInfo[], becomFriendList: FriendInfo[], historyRecordList: historyRecordInfo[] }
+export interface HistoryRecordInfo extends GroupBaseInfo { lastOnlineMsg: string, lastOnlineDate: number }
+export interface AddressSchema extends UserBaseInfo { joinGroupList: GroupJoinInInfo[], becomFriendList: FriendInfo[], historyRecordList: HistoryRecordInfo[] }
 
 export interface MsgInfo extends UserBaseInfo { msg: string, msgID: string, msgDate: number, }
 export interface MsgSchema extends GroupBaseInfo { msgList: MsgInfo[], }

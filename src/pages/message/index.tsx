@@ -1,22 +1,20 @@
 /** @jsx jsx */
 // 首页聊天记录列表
 
-import { useState, useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useRef, useState, useEffect } from 'react'
 import { useStore } from 'stook'
 import styled from "@emotion/styled";
 import { jsx, css } from "@emotion/core";
 
 import { Avatar, Layout, Menu, Badge } from 'antd'
-import {IssuesCloseOutlined, SettingOutlined} from '@ant-design/icons'
-import { Loading, Empty } from '../../components'
+import { IssuesCloseOutlined } from '@ant-design/icons'
+import { Loading, Empty, PublicGroup, PrivateGroup } from '../../components'
 
 import $ from '../../units/api'
-import { useMineRouteMatch } from '../../units/customHooks'
 import { userInfo as user } from '../../units/context'
-import { historyRecordInfo } from '../../units/interface';
+import { GroupBaseInfo, HistoryRecordInfo } from '../../units/interface';
 
-const { Sider, Content, Footer } = Layout
+const { Sider, Content, } = Layout
 const MenuItem = styled(Menu.Item)`
     height: auto!important;
     padding: 5px 15px!important;
@@ -46,31 +44,26 @@ const LastOnlineMsg = styled.div`
     text-overflow: ellipsis;
     white-space: nowrap;
 `
-const PublicBtnGroup = (props:any) => {
-    return (
-        <Menu>公共群</Menu>
-    )
-}
-const SelfBtnGroup = (props:any) => {
-    return (
-        <Menu>私聊群</Menu>
-    )
-}
+
 export default () => {
     const userInfo = useStore('userInfo')[0] || user
     const [isEmpty, setIsEmpty] = useState(true)
     const [isLoading, setIsLoading] = useState(false)
     const [historyGroupList, setHistoryGroupList] = useState([])
-    const [onlineGroup, setOnlineGroup] = useState({id: '', name: '聊天室', type: 0})
-    const { url, path } = useMineRouteMatch()
-    const selectOnlineGroup = (event:any) => {
-        let data = event.currentTarget.dataset
-        console.log('data', event.currentTarget.dataset)
-        setOnlineGroup(data)
+    const [chattingGroup, setChattingGroup] = useState<GroupBaseInfo>({ groupID: '', groupName: '聊天室', groupType: 0 })
+    
+    // 选择聊天对象,开启websocket
+    const selectChattingGroup = (event: any) => {
+        // let data = (groupBaseInfo.current as unknown as object).dataset
+        let {domEvent} = event
+        let data = domEvent.currentTarget.dataset
+        console.log('data', data)
+        setChattingGroup(data)
     }
+
     useEffect(() => {
         setIsLoading(true)
-        // 历史记录列表
+        // 聊天记录列表
         let cancelRequest = false // [组件销毁]的话, 停止修改数据
         $.getHistoryGroupList({ userID: userInfo.userID }).then((data: any) => {
             if (cancelRequest) { return }
@@ -84,17 +77,18 @@ export default () => {
     }, [userInfo])
     return (
         <Layout css={css`height:100%`}>
+            {/* 聊天记录侧边栏 */}
             <Sider width={300} css={css`background: #fafafa;heigth: 100%;`}>
-                <Menu>
-                    <MenuItem><IssuesCloseOutlined style={{fontSize: 20}}/>待办.{0}</MenuItem>
+                <Menu onClick={selectChattingGroup}>
+                    <MenuItem><IssuesCloseOutlined style={{ fontSize: 20 }} />待办.{0}</MenuItem>
                     {
-                        isLoading ? <Loading /> : isEmpty ? <Empty /> : historyGroupList.map((item: historyRecordInfo) => {
+                        isLoading ? <Loading /> : isEmpty ? <Empty /> : historyGroupList.map((item: HistoryRecordInfo, index) => {
                             return (
-                                <MenuItem key={item.groupID} >
+                                <MenuItem key={index} data-group-i-d={item.groupID} data-group-name={item.groupName} data-group-type={item.groupType}>
                                     <Badge count={0}>
                                         <Avatar size={40} shape='square' src={item.groupAvatar} alt='图片加载失败' />
                                     </Badge>
-                                    <div css={css`margin-left: 10px;flex: 1;`} data-id={item.groupID} data-name={item.groupName} data-type={item.groupType} onClick={selectOnlineGroup}>
+                                    <div css={css`margin-left: 10px;flex: 1;`}>
                                         <div css={css`display: flex;justify-content: space-between;align-items: baseline;line-height: 20px;`}>
                                             <span css={css`font-size: 16px;font-weight: bold;`}>{item.groupName}</span>
                                             <span css={css`font-size: 12px; color: #999;`}>{item.lastOnlineDate || 'xxx'}</span>
@@ -106,19 +100,19 @@ export default () => {
                     }
                 </Menu>
             </Sider>
-            <Layout>
-                <Content>
-                    {
-                        !onlineGroup.type ? <Empty />: (<div>
-                        {onlineGroup.name}
-                        {
-                            onlineGroup.type === 1 ? <PublicBtnGroup /> : <SelfBtnGroup />
-                        }
-                    </div> )
+            {/* 聊天栏 */}
+            <Content>
+                {(() => {
+                    switch (+chattingGroup.groupType) {
+                        case 1:
+                            return <PublicGroup groupBaseInfo={chattingGroup} />
+                        case 2:
+                            return <PrivateGroup />
+                        default:
+                            return <Empty />
                     }
-                </Content>
-                <Footer>footer</Footer>
-            </Layout>
+                })()}
+            </Content>
         </Layout >
     )
 }

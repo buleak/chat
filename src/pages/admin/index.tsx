@@ -5,7 +5,7 @@ import { Layout } from 'antd'
 import { Head, Side } from '../../components'
 import { message, address, mine, document } from '../index'
 
-import { useMineRouteMatch } from '../../units/unit'
+import { useMineRouteMatch } from '../../units/customHooks'
 import { userInfo, UserInfoCtx } from '../../units/context'
 
 const {Content, Footer} = Layout
@@ -20,12 +20,12 @@ export default () => {
                 <Layout>
                     <Head />
                     <Content>
+                        {/* 消息 联系人 文件 设置 */}
                         <Switch>
-                            {/* 消息 联系人 文件 设置 */}
-                            <Route exact path={`${path}`} component={message}></Route>
+                            <Route path={`${path}`} component={message}></Route>
                             <Route exact path={`${path}/address`} component={address}></Route>
                             <Route exact path={`${path}/document`} component={document}></Route>
-                            <Route exact path={`$${path}/mine`} component={mine}></Route>
+                            <Route exact path={`${path}/mine`} component={mine}></Route>
                         </Switch>
                     </Content>
                     <Footer>

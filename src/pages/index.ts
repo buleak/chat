@@ -14,6 +14,9 @@ import document from "./document";
 import mine from "./mine";
 // 聊天
 import chat from "./chat";
+import file from "./file";
+import program from "./program";
+import proclamation from "./proclamation";
 
 // 好友
 import detail from "./detail";
@@ -27,7 +30,8 @@ import notFound from "./notFound";
 export {
     login, register,
     admin, 
-    message, address, document, mine, chat,
+    message, address, document, mine, 
+    chat, file, program, proclamation, 
     detail, invite,
     createGroup, groupModify,
     notFound,

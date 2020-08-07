@@ -12,7 +12,7 @@ import {Switch, Route, Redirect} from 'react-router-dom'
 // } from './pages'
 
 import {
-  login, register, chat, createGroup,
+  login, register, createGroup,
   admin as HomePage, 
   notFound as NotFound,
 } from './pages'
@@ -29,7 +29,6 @@ const App = () => (
     <Route path='/login' component={login} />
     <Route path='/register' component={register} />
     <Route path='/admin' render={() => <HomePage />} />
-    <Route path='/chat' component={chat} />
     <Route path='/createGroup' component={createGroup} />
     <Route render={() => <NotFound />} />
   </Switch>
