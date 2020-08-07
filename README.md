@@ -1,7 +1,7 @@
 # ali cloud 
-// static /usr/local/static 7000 
-// site   /usr/local/site   9000
-// web    /usr/local/react/chatroom/build   80 
+1. // static /usr/local/static 7000 
+2. // site   /usr/local/site   9000
+3. // web    /usr/local/react/chatroom/build   80 
 
 # Github oAuth
 ```js
