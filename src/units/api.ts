@@ -16,7 +16,7 @@ export default {
     // 申请好友
     addFriend: (params: { userID: string, targetID: string }) => post('/chat/address', params),
     // 获取历史聊天记录
-    getHistoryMsg: (params: { userID: string, groupID: string, groupType: number }) => get('/chat/msg', params),
+    getHistoryMsg: (params: { userID: string, groupID: string, groupName: string, groupType: number }) => get('/chat/msg', params),
     // 创建群聊
     createGroup: (params: { userID: string, groupName: string, groupType: number, groupAvatar: string, memberList: CheckboxValueType[] }) => post('/chat/group', params),
 }

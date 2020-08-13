@@ -15,11 +15,12 @@
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": false,
+    "isolatedModules": true,
     "noEmit": true,
     "jsx": "react"
   },
   "include": [
-    "src", "config.overrides.ts"
+    "src",
+    "config.overrides.ts"
   ]
 }

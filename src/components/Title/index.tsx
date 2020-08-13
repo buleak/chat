@@ -5,7 +5,7 @@
 import { jsx, css } from "@emotion/core";
 import { LeftOutlined, DashOutlined} from '@ant-design/icons'
 
-const index = (props:any) => {
+export default (props:any) => {
     const { title, hasDashBtn=false, color='#000', bgColor='#fff' } = props;
     return (
         <header css={css`display:flex;justify-content: space-between;align-items: center;position:fixed;top:0;left:0;width:100vw;padding: 10px;background-color:${bgColor};border-bottom:1px solid #8c8c8c;z-index: 100;`}>
@@ -16,4 +16,3 @@ const index = (props:any) => {
     )
 }
 
-export default index

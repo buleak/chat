@@ -29,7 +29,7 @@ const returnLoginPage = () => {
     return false;
   }
   // 携带当前页面路径跳转到登录页面，登录成功后返回当前页面
-  localStorage.removeItem('token')
+  localStorage.removeItem('[token]')
   window.location.href = '/login'
 }
 // 请求拦截
@@ -37,7 +37,7 @@ axios.interceptors.request.use(
   config => {
     // 每次发送请求之前判断是否存在token，如果存在，则统一在http请求的header都加上token，不用每次请求都手动添加了
     // 即使本地存在token，也有可能token是过期的，所以在响应拦截器中要对返回状态进行判断
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('[token]');
     if (token) {
       // console.log('token >>', token)
       config.headers.Authorization = `Bearer ${token}` // 不能直接设置值为 token，需要在前面加上 Bearer+空格       
@@ -111,10 +111,10 @@ export const get = (url: string, params?: any) => {
     axios.get(url, {
       params
     }).then(res => {
-      console.log(`GET[${url}] >>`, res)
+      console.log(`GET[${url}] resolve >>`, res)
       resolve(res.data)
     }).catch(err => {
-      console.log(`GET[${url}] >>`, err)
+      console.log(`GET[${url}] reject >>`, err)
       reject(err.data)
     })
   })
@@ -131,10 +131,10 @@ export const post = (url: string, params: any) => {
     axios.post(url, {
       ...params
     }).then(res => {
-      console.log(`POST[${url}] >>`, res)
+      console.log(`POST[${url}] resolve >>`, res)
       resolve(res.data)
     }).catch(err => {
-      console.log(`POST[${url}] >>`, err)
+      console.log(`POST[${url}] reject >>`, err)
       reject(err.data)
     })
   })

@@ -1,16 +1,6 @@
 import React from 'react'
 import {Switch, Route, Redirect} from 'react-router-dom'
 
-// import {
-//   chat, send,
-//   mine, search,
-//   detail, invite,
-//   login, register,
-//   address, createGroup, groupModify,
-//   admin as FriendList, 
-//   notFound as NotFound,
-// } from './pages'
-
 import {
   login, register, createGroup,
   admin as HomePage, 
@@ -24,7 +14,7 @@ const App = () => (
   // senstive: 大小写匹配  ['/', '/foo', '/Foo']
   <Switch>
     <Route exact path='/' render={({location}) => {
-      return localStorage.getItem('token') ?  (<HomePage />) : (<Redirect from='/' to={{pathname: '/login', state:{from:location}}} />)
+      return localStorage.getItem('[token]') ?  (<HomePage />) : (<Redirect from='/' to={{pathname: '/login', state:{from:location}}} />)
     }} />
     <Route path='/login' component={login} />
     <Route path='/register' component={register} />

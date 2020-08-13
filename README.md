@@ -19,6 +19,10 @@
 */
 ```
 
+# 登录持久化
+1. client: 
+2. server: 使用`egg-jwt`
+
 # 目录结构
 - build：打包文件
 - public：公共资源
@@ -35,7 +39,7 @@
   - pages：页面
     - address
     - admin
-    - chat
+    - chatRoom
     - createGroup
     - detail
     - find

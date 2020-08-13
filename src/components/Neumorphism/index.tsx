@@ -10,12 +10,14 @@ import {Button} from 'antd'
 // $w: #ffffff; 
 // $b: #000000;
 export const NButton = styled(Button)`
-    box-shadow: 1px 1px 1px rgba(0,0,0,0.5), -1px -1px 1px rgba(240,240,240,1),
-                2px 2px 2px rgba(0,0,0,0.3), -2px -2px 2px rgba(240,240,240,0.8),
-                3px 3px 3px rgba(0,0,0,0.1), -3px -3px 3px rgba(240,240,240,0.5);
+    border: none;
+    box-shadow: 1px 1px 3px rgba(62, 157, 245, 0.3), -1px -1px 3px rgba(62, 157, 245, 0.3),
+                2px 2px 5px rgba(62, 157, 245, 0.2), -2px -2px 5px rgba(62, 157, 245, 0.2),
+                3px 3px 8px rgba(62, 157, 245, 0.1), -3px -3px 8px rgba(62, 157, 245, 0.1);
     &:hover {
-        transition: color 0.4s ease-out;
-        box-shadow: 0 0 0 rgba(0,0,0,0.5), 0 0 0 rgba(240,240,240,0.5), 
-                    inset 3px 3px 3px 1px rgba(0,0,0,0.5), inset -1px -1px 5px 0px rgba(240,240,240,0.5)
+        transition: color 0.8s ease-out;
+        box-shadow: 1px 1px 3px rgba(62, 157, 245, 0.5) inset, -1px -1px 3px rgba(62, 157, 245, 0.3) inset,
+                    2px 2px 5px rgba(62, 157, 245, 0.3) inset, -2px -2px 5px rgba(62, 157, 245, 0.2) inset,
+                    3px 3px 8px rgba(62, 157, 245, 0.1) inset, -3px -3px 8px rgba(62, 157, 245, 0.1) inset;
     }
 `

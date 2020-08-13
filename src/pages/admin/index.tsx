@@ -1,6 +1,7 @@
-import React from 'react'
-import { Switch, Route } from 'react-router-dom'
+import React, {useEffect} from 'react'
+import { Switch, Route, useHistory } from 'react-router-dom'
 
+import {getState} from 'stook'
 import { Layout } from 'antd'
 import { Head, Side } from '../../components'
 import { message, address, mine, document } from '../index'
@@ -11,8 +12,13 @@ import { userInfo, UserInfoCtx } from '../../units/context'
 const {Content, Footer} = Layout
 
 export default () => {
-    const { url, path } = useMineRouteMatch()
-
+    // console.log('getState', getState('[userInfo]'))
+    const { url, path } = useMineRouteMatch(), history = useHistory()
+    useEffect(() => {
+        history.push({
+            pathname: `${url}/message`
+        })
+    }, [])
     return (
         <UserInfoCtx.Provider value={userInfo}>
             <Layout>
@@ -20,9 +26,9 @@ export default () => {
                 <Layout>
                     <Head />
                     <Content>
-                        {/* 消息 联系人 文件 设置 */}
+                        {/* 消息 联系人 文件 设置 */ }
                         <Switch>
-                            <Route path={`${path}`} component={message}></Route>
+                            <Route path={`${path}/message`} component={message}></Route>
                             <Route exact path={`${path}/address`} component={address}></Route>
                             <Route exact path={`${path}/document`} component={document}></Route>
                             <Route exact path={`${path}/mine`} component={mine}></Route>

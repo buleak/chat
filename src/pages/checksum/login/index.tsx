@@ -4,18 +4,18 @@
 
 /** @jsx jsx */
 // import React from 'react'
-import { mutate } from 'stook'
+import { useStore } from 'stook'
 import styled from "@emotion/styled";
 import { jsx, css } from "@emotion/core";
 import { Form, Input, message } from 'antd'
 import { GithubOutlined } from '@ant-design/icons'
-import { NButton } from "../../components/Neumorphism";
-import { useFetch } from 'stook-rest'
+import { NButton } from "../../../components/Neumorphism";
+// import { useFetch } from 'stook-rest'
 
 // import {LoginForm} from '../../units/interface'
-import $ from '../../units/api'
-import bg from '../../resources/imgs/bg-1.jpg'
-import logo from '../../resources/imgs/logo.svg'
+import $ from '../../../units/api'
+import bg from '../../../resources/imgs/bg-1.jpg'
+import logo from '../../../resources/imgs/logo.svg'
 
 const LoginBox = styled.div`
     width: 100vw;
@@ -36,16 +36,15 @@ const btnLayout = { wrapperCol: { offset: 4, span: 16 } };
 const layout = { labelCol: { span: 8 }, wrapperCol: { span: 16 }, };
 
 export default (props:any) => {
+    const [info, setInfo] = useStore('[userInfo]', '')
     const onFinish = (values: any) => { // 提交表单
-        console.log('login', values)
         $.login(values).then((data:any) => {
-            console.log(data)
             const {msg, token, status, userInfo} = data
             if(status) { // 登录成功
                 message.info(msg)
-                localStorage.setItem(`token`, token)
-                localStorage.setItem(`userInfo`, JSON.stringify(userInfo))
-                mutate('[userInfo]', userInfo)
+                localStorage.setItem(`[token]`, token)
+                localStorage.setItem(`[userInfo]`, JSON.stringify(userInfo))
+                setInfo(userInfo)
                 props.history.replace('/admin')
             }else { // 登录失败
                 message.warn(msg)
@@ -60,7 +59,7 @@ export default (props:any) => {
     }
     const oAuthGithub = () => { // 第三方 Github登录 TODO
         const url = 'https://github.com/login/oauth/authorize', 
-            clientID = localStorage.getItem('oAuthGithub'), 
+            clientID = localStorage.getItem('[oAuthGithub]'), 
             redirectURI = 'http://localhost:7001/oAuthGithub';
         window.location.href = `${url}?client_id=${clientID}&redirect_uri=${redirectURI}`
     }
@@ -91,9 +90,7 @@ export default (props:any) => {
                 padding: 20px 10px;
                 border-radius: 8px;
                 background: rgba(240, 240, 240, 0.5);
-                box-shadow: 2px 2px 3px rgba(0,0,0,1), -2px -2px 3px rgba(240,240,240,1), 
-                    3px 3px 4px rgba(0,0,0,0.8), -3px -3px 4px rgba(240,240,240,0.8), 
-                    4px 4px 5px rgba(0,0,0,0.5), -4px -4px 5px rgba(240,240,240,0.5); // inset 左 下 模糊区间 模糊距离 颜色 内阴影
+                box-shadow: 1px 1px 3px rgba(0,0,0,0.5), 3px 3px 5px rgba(0,0,0,0.3), 5px 5px 8px rgba(0,0,0,0.1); // inset 左 下 模糊区间 模糊距离 颜色 内阴影
                 `}
             >
                 <Form.Item

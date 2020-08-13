@@ -6,7 +6,7 @@ import { jsx, css } from "@emotion/core";
 import {Spin} from 'antd'
 import { ChromeFilled} from '@ant-design/icons'
 
-const index = () => {
+export default () => {
     return (
         <Spin
             css={css`width:100%;height:200px;margin-top:150px;font-size: 30px;`}
@@ -18,4 +18,3 @@ const index = () => {
     )
 }
 
-export default index

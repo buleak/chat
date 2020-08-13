@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { useState, useEffect, Fragment } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
+import {getState} from 'stook'
 import styled from "@emotion/styled";
 import { jsx, css } from "@emotion/core";
 import { Avatar } from 'antd'
@@ -8,7 +9,7 @@ import { Avatar } from 'antd'
 import $ from '../../units/api'
 import { userInfo } from '../../units/context'
 import { Send, Title } from '../../components'
-import { GroupSchema, MsgInfo } from "../../units/interface";
+import { GroupSchema, MsgInfo, GroupBaseInfo } from "../../units/interface";
 
 // 三角箭头
 const triangle = (col: string, rowNum: string, colNum: string, bwidth: string, bcolor1: string, bcolor2: string, zIndex: number) => {
@@ -62,10 +63,9 @@ const Msg = styled.div`
     word-wrap: break-word;
     word-break: break-all;
 `
-export default (props: any) => {
-    const location = useLocation()
-    const state: any = location.state
-    const { groupID, groupType } = props
+export default () => {
+    // const {groupID} = useParams<{groupID: string}>()
+    const { groupID, groupName, groupType } = useLocation().state as GroupBaseInfo
     const [groupInfo, setGroupInfo] = useState<GroupSchema>({
         groupID: '1',
         groupType: 1, 
@@ -79,7 +79,8 @@ export default (props: any) => {
     const [historyMsg, setHistoryMsg] = useState<MsgInfo[]>([])
 
     useEffect(() => {
-        $.getHistoryMsg({ userID: userInfo.userID, groupID, groupType }).then((data: any) => {
+        // TODO: 获取该群的历史消息, 如果
+        $.getHistoryMsg({ userID: userInfo.userID, groupID, groupName, groupType }).then((data: any) => {
             setGroupInfo(data.groupInfo)
             setHistoryMsg(data.msgList)
         })
@@ -102,7 +103,7 @@ export default (props: any) => {
             `}>
                 {
                     historyMsg.length !== 0 && (historyMsg as MsgInfo[]).map((item: MsgInfo) => {
-                        if (item.userID === JSON.parse(localStorage.getItem('userInfo') as string).userID) {
+                        if (item.userID === getState('[userInfo]').userID) {
                             return (
                                 <MineMsg key={item.msgID}>
                                     <Avatar src={item.avatar} alt='图片加载失败' />

@@ -1,17 +1,19 @@
 /** @jsx jsx */
 // 首页聊天记录列表
 
-import { useRef, useState, useEffect } from 'react'
-import { useStore } from 'stook'
+import { useState, useEffect } from 'react'
+import { getState } from 'stook'
 import styled from "@emotion/styled";
 import { jsx, css } from "@emotion/core";
 
+import { useHistory } from 'react-router-dom';
 import { Avatar, Layout, Menu, Badge } from 'antd'
 import { IssuesCloseOutlined } from '@ant-design/icons'
-import { Loading, Empty, PublicGroup, PrivateGroup } from '../../components'
+import { Loading, Empty } from '../../components'
+import {PublicGroup, PrivateGroup} from '../index'
 
 import $ from '../../units/api'
-import { userInfo as user } from '../../units/context'
+import { useMineRouteMatch } from '../../units/customHooks';
 import { GroupBaseInfo, HistoryRecordInfo } from '../../units/interface';
 
 const { Sider, Content, } = Layout
@@ -46,19 +48,22 @@ const LastOnlineMsg = styled.div`
 `
 
 export default () => {
-    const userInfo = useStore('userInfo')[0] || user
+    const userInfo = getState('[userInfo]')
     const [isEmpty, setIsEmpty] = useState(true)
     const [isLoading, setIsLoading] = useState(false)
     const [historyGroupList, setHistoryGroupList] = useState([])
     const [chattingGroup, setChattingGroup] = useState<GroupBaseInfo>({ groupID: '', groupName: '聊天室', groupType: 0 })
+    const { url, path } = useMineRouteMatch(), history = useHistory();
     
-    // 选择聊天对象,开启websocket
+    // 选择聊天对象
     const selectChattingGroup = (event: any) => {
-        // let data = (groupBaseInfo.current as unknown as object).dataset
         let {domEvent} = event
         let data = domEvent.currentTarget.dataset
-        console.log('data', data)
         setChattingGroup(data)
+        history.push({
+            pathname: `${url}/chatRoom`,
+            state: {...data}
+        })
     }
 
     useEffect(() => {
@@ -78,7 +83,7 @@ export default () => {
     return (
         <Layout css={css`height:100%`}>
             {/* 聊天记录侧边栏 */}
-            <Sider width={300} css={css`background: #fafafa;heigth: 100%;`}>
+            <Sider width={300} css={css`background: #fafafa;height: 100%;`}>
                 <Menu onClick={selectChattingGroup}>
                     <MenuItem><IssuesCloseOutlined style={{ fontSize: 20 }} />待办.{0}</MenuItem>
                     {
@@ -107,7 +112,7 @@ export default () => {
                         case 1:
                             return <PublicGroup groupBaseInfo={chattingGroup} />
                         case 2:
-                            return <PrivateGroup />
+                            return <PrivateGroup groupBaseInfo={chattingGroup} />
                         default:
                             return <Empty />
                     }

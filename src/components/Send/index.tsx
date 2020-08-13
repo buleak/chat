@@ -6,8 +6,7 @@ import { jsx, css } from "@emotion/core";
 import {Input} from 'antd'
 // import { SmileFilled, PlusCircleOutlined} from '@ant-design/icons'
 
-
-const index = (props:any) => {
+export default (props:any) => {
     // const { title, hasDashBtn=false, color='#000', bgColor='#fff' } = props;
     const onPressEnter = (value: any) => {
         console.log('value', value)
@@ -19,4 +18,3 @@ const index = (props:any) => {
     )
 }
 
-export default index

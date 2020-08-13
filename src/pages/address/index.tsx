@@ -58,7 +58,20 @@ export default () => {
             groupID = `${userInfo.userID}_${id}`
         }
         history.push({
-            pathname: '/chat',
+            pathname: 'message/chatRoom',
+            state: { groupID, groupType: Number(grouptype) }
+        })
+    }
+    const publicChat = (e:any) => {
+        let groupID = ''
+        const {grouptype, id} = e.currentTarget.dataset
+        if(grouptype === 1) {
+            groupID = id
+        }else if(grouptype === 2) {
+            groupID = `${userInfo.userID}_${id}`
+        }
+        history.push({
+            pathname: 'message/chatRoom',
             state: { groupID, groupType: Number(grouptype) }
         })
     }
@@ -105,7 +118,7 @@ export default () => {
                 <li style={{padding: '10px', fontSize: '16px', fontWeight: 'bold', backgroundColor: '#f0f0f0'}}>群列表</li>
                 {
                     addressObj.joinGroupList && addressObj.joinGroupList.map((item:any) => (
-                        <FlexLi key={item.groupID} data-grouptype={2} data-id={item.groupID} onClick={privateChat}>
+                        <FlexLi key={item.groupID} data-grouptype={2} data-id={item.groupID} onClick={publicChat}>
                             <Avatar className='anticon' src={item.groupAvatar} size={30} />
                             <span className='type'>{item.groupName}</span>
                         </FlexLi>

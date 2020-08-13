@@ -1,9 +1,9 @@
 /** @jsx jsx */
 import { useState, useEffect, useRef, Fragment } from 'react'
-// import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import styled from "@emotion/styled";
 import { jsx, css } from "@emotion/core";
-import { Avatar, Input, Button, Checkbox } from 'antd'
+import { Avatar, Input, Button, Checkbox, message } from 'antd'
 
 import $ from '../../units/api'
 import { userInfo } from '../../units/context'
@@ -56,6 +56,7 @@ const InputCenter = styled(Input)`
 `
 
 export default () => {
+    const history = useHistory()
     const groupNameRef = useRef(null)
     const [groupName, setGroupName] = useState('')
     const [memberList, setMemberList] = useState<CheckboxValueType[]>([])
@@ -72,6 +73,15 @@ export default () => {
     const createGroup = () => {
         $.createGroup({userID:userInfo.userID, groupName, groupType: 1, groupAvatar, memberList}).then((data:any) => {
             console.log('data', data)
+            const {status, msg} = data
+            if(status) {
+                message.info(msg)
+                history.push({
+                    pathname: `admin/address`
+                })
+            }else {
+                message.error(msg)
+            }
         })
     }
     useEffect(() => {

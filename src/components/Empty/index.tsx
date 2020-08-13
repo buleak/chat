@@ -6,7 +6,7 @@ import { jsx, css } from "@emotion/core";
 import {Empty} from 'antd'
 // import { ChromeFilled} from '@ant-design/icons'
 
-const index = () => {
+export default () => {
     return (
         <Empty 
             description='暂无数据'
@@ -14,4 +14,3 @@ const index = () => {
     )
 }
 
-export default index
